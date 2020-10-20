@@ -1,0 +1,38 @@
+String enviroment = env.enviroment
+String gitCredentials = "Git_user"
+String branch = ''
+String repoUrl = "https://github.com/jmorenor1986/devops-example.git"
+node {
+    // Start Stages
+	stage('Prepare enviroment'){
+		if(enviroment=='acceptance'){
+		branch = 'develop';
+	   }
+	   if(enviroment=='production'){
+	    branch = 'main';
+	   }
+	   if(enviroment=='test'){
+		branch = 'example-microservice'
+	   }
+	}
+
+    stage('Clone Repo') {
+        echo 'Make the output directory'
+        sh 'mkdir -p build'
+        echo 'Cloning files into (enviroment: "' + enviroment + '" )'
+       dir('build') {
+          git branch: branch, credentialsId: 	gitCredentials, url: repoUrl
+        }
+    }
+
+	stage('provisioning'){
+         echo 'Here provisione with ansible or py script or shell scripting';
+    }
+
+	stage('Compile'){
+          echo 'Mvn compile'
+          sh 'mvn clean install -f build/microservice'
+          echo 'Compile finish'
+
+   }
+}

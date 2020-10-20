@@ -74,3 +74,4 @@ ldap
 email-ext
 docker-java-api
 docker-plugin
+pipeline-maven

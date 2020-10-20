@@ -6,6 +6,7 @@ dnf list docker-ce && \
 dnf update && \
 dnf install docker-ce --nobest -y && \
 dnf clean all
+RUN dnf install maven -y
 RUN usermod -a -G docker jenkins
 USER jenkins
 ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
