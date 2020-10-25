@@ -4,10 +4,9 @@ RUN dnf update -y && dnf install -y 'dnf-command(config-manager)' && \
 dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo && \
 dnf list docker-ce && \
 dnf update && \
-dnf install docker-ce --nobest -y && \
+dnf install docker-ce docker-ce-cli --nobest -y && \
 dnf clean all
 RUN dnf install maven -y
-RUN usermod -a -G docker jenkins
 USER jenkins
 ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
 ENV JENKINS_USER admin

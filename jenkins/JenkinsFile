@@ -1,6 +1,7 @@
 String enviroment = env.enviroment
 String gitCredentials = "Git_user"
 String branch = ''
+String pùerto = '8080'
 String repoUrl = "https://github.com/jmorenor1986/devops-example.git"
 node {
     // Start Stages
@@ -35,4 +36,23 @@ node {
           echo 'Compile finish'
 
    }
+
+   stage('Deploy'){
+          agent {
+            dockerfile {
+              filename 'build/microservice/Dockerfile.build'
+               dir 'build'
+               label 'my-defined-label'
+               additionalBuildArgs  '--build-arg version=1.0.2'
+               args '-v /tmp:/tmp'
+            }
+          }
+          echo 'Deploy success'
+  }
+
+  stage('Run'){
+          echo 'Run docker'
+          sh 'docker run -p '+puerto+ ':'+ puerto+ ' --name '+branch +' --detach '+branch
+          echo 'Run success'
+  }
 }
