@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+    <springProperty scope="context" name="microName" source="spring.application.name" defaultValue="not specified"/>
+
+    <appender name="LOGSTASH"
+              class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>localhost:5044</destination>
+        <reconnectionDelay>5 second</reconnectionDelay>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeCallerData>false</includeCallerData>
+            <includeContext>false</includeContext>
+            <shortenedLoggerNameLength>36</shortenedLoggerNameLength>
+            <customFields>
+                {
+                "custom_field": "xxxx",
+                "spring_property": "${microName}",
+                "jvm_system_variable": "${java.runtime.name} ${java.runtime.version}",
+                "env_variable": "${ENV_VARIABLE}"
+                }
+            </customFields>
+        </encoder>
+
+    </appender>
+
+    <appender name="LOGSTASH_ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>500</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <neverBlock>false</neverBlock>
+        <appender-ref ref="LOGSTASH" />
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!--
+        <encoder>
+         <pattern>%d %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+         -->
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeCallerData>false</includeCallerData>
+            <includeContext>false</includeContext>
+            <shortenedLoggerNameLength>36</shortenedLoggerNameLength>
+            <customFields>
+                {
+                "custom_field": "xxxx",
+                "spring_property": "${microName}",
+                "jvm_system_variable": "${java.runtime.name} ${java.runtime.version}",
+                "env_variable": "${ENV_VARIABLE}"
+                }
+            </customFields>
+        </encoder>
+    </appender>
+
+    <appender name="STDOUT_ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>500</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <neverBlock>false</neverBlock>
+        <appender-ref ref="STDOUT" />
+    </appender>
+
+    <logger name="org.jrovira" level="INFO" additivity="false">
+        <appender-ref ref="STDOUT_ASYNC" />
+        <appender-ref ref="LOGSTASH_ASYNC" />
+    </logger>
+
+    <root level="WARN">
+        <appender-ref ref="STDOUT_ASYNC" />
+        <appender-ref ref="LOGSTASH_ASYNC" />
+    </root>
+</configuration>

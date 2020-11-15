@@ -1,18 +1,18 @@
-String enviroment = env.enviroment
+String environment = env.environment
 String gitCredentials = "Git_user"
 String branch = ''
-String pùerto = '8080'
+String puerto = '8080'
 String repoUrl = "https://github.com/jmorenor1986/devops-example.git"
 node {
     // Start Stages
-	stage('Prepare enviroment'){
-		if(enviroment=='acceptance'){
+	stage('Prepare environment'){
+		if(environment=='acceptance'){
 		branch = 'develop';
 	   }
-	   if(enviroment=='production'){
+	   if(environment=='production'){
 	    branch = 'main';
 	   }
-	   if(enviroment=='test'){
+	   if(environment=='test'){
 		branch = 'example-microservice'
 	   }
 	}
@@ -38,15 +38,8 @@ node {
    }
 
    stage('Deploy'){
-          agent {
-            dockerfile {
-              filename 'build/microservice/Dockerfile.build'
-               dir 'build'
-               label 'my-defined-label'
-               additionalBuildArgs  '--build-arg version=1.0.2'
-               args '-v /tmp:/tmp'
-            }
-          }
+          echo 'Deploy into docker'
+          sh 'docker build build/microservice -t '+branch
           echo 'Deploy success'
   }
 

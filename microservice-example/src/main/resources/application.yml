@@ -1,0 +1,7 @@
+server:
+  servlet:
+    context-path: /microservice
+  port: 5000
+
+logging:
+  file: C:\clientes\pring-boot-elk.log
