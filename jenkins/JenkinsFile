@@ -1,7 +1,7 @@
 String environment = env.environment
 String gitCredentials = "Git_user"
 String branch = ''
-String puerto = '8080'
+String puerto = '5000'
 String repoUrl = "https://github.com/jmorenor1986/devops-example.git"
 node {
     // Start Stages
@@ -20,7 +20,7 @@ node {
     stage('Clone Repo') {
         echo 'Make the output directory'
         sh 'mkdir -p build'
-        echo 'Cloning files into (enviroment: "' + enviroment + '" )'
+        echo 'Cloning files into (enviroNment: "' + environment + '" )'
        dir('build') {
           git branch: branch, credentialsId: 	gitCredentials, url: repoUrl
         }
@@ -32,14 +32,14 @@ node {
 
 	stage('Compile'){
           echo 'Mvn compile'
-          sh 'mvn clean install -f build/microservice'
+          sh 'mvn clean install -f build/microservice-example'
           echo 'Compile finish'
 
    }
 
    stage('Deploy'){
           echo 'Deploy into docker'
-          sh 'docker build build/microservice -t '+branch
+          sh 'docker build build/microservice-example -t '+branch
           echo 'Deploy success'
   }
 
